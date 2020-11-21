@@ -1,0 +1,39 @@
+# 数据库配置
+mysql:
+  host: localhost
+  user: root
+  password: password
+  database: typecho
+
+# 数据库中的表前缀
+prefix: typecho_
+
+# 用于生成评论标识符的盐
+# 通常不需要修改
+salt: typecho
+
+# 博主邮箱
+# 用于确认博主身份
+email: email@domain.com
+
+# 站点地址
+# 用于生成来源地址
+site: https://domain.com
+
+# 生成的文章链接格式
+# 可用参数: {cid} 日志 ID, {slug} 日志缩略名, {category} 分类, {directory} 多级分类, {year} 年, {month} 月, {day} 日
+postPermalink: /{year}/{month}/{day}/{slug}/
+
+# 生成的页面链接格式
+# 可用参数: {cid} 页面 ID, {slug} 页面缩略名
+pagePermalink: /{slug}/
+
+# 忽略的内容
+# 值是在Typecho中对应的CID
+#ignoreCID: [1, 2, 3]
+
+# 链接缩略名替换，既替换 {slug} 。
+# 格式:
+# <替换前>: <替换后>
+#slugReplace:
+#  msg: about

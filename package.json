@@ -1,0 +1,32 @@
+{
+  "name": "twikoo-import-tools-typecho",
+  "version": "1.0.0",
+  "description": "Typecho 到 Twikoo 迁移脚本",
+  "main": "migrator-comment.js",
+  "dependencies": {
+    "blueimp-md5": "^2.18.0",
+    "js-yaml": "^3.14.0",
+    "marked": "^1.2.4",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node migrator-comment",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Android-KitKat/twikoo-import-tools-typecho.git"
+  },
+  "keywords": [
+    "Twikoo",
+    "Import",
+    "Typecho"
+  ],
+  "author": "Android-KitKat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Android-KitKat/twikoo-import-tools-typecho/issues"
+  },
+  "homepage": "https://github.com/Android-KitKat/twikoo-import-tools-typecho#readme"
+}
