@@ -189,10 +189,13 @@ async function getURL(cid) {
  * @returns {int} 评论ID
  */
 function getParentID(comments, coid, root) {
-    if (coid === 0) return null;
+    if (!coid || coid === 0) return null;
     let comment = comments.get(coid);
-    while (root && comment && comment.parent != 0) {
-        comment = comments.get(comment.parent);
+    if (!comment) return null;
+    while (root && comment.parent != 0) {
+        let parent = comments.get(comment.parent);
+        if (!parent) break;
+        comment = parent;
     }
     return comment.coid;
 }
