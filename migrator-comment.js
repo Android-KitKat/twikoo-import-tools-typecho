@@ -42,6 +42,7 @@ String.prototype.format = function (args) {
  * @returns {string} 哈希值
  */
 function hash(value) {
+    if (!value) return null;
     let prefix = config.salt ? `${config.salt}-` : '';
     return md5(`${prefix}${value}`);
 }
