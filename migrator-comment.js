@@ -157,6 +157,7 @@ async function getDirectory(cid) {
  */
 async function getURL(cid) {
     let result = (await executeSQL(`SELECT * FROM \`${config.prefix}contents\` WHERE \`cid\` IN(${cid})`))[0];
+    if (!result) throw { code: 'not_found' };
     let permalink;
     switch (result.type) {
         case 'post':
@@ -224,7 +225,14 @@ async function convert() {
     }
     for (let comment of comments.values()) {
         try {
-            let url = await getURL(comment.cid);
+            let url;
+            try {
+                url = await getURL(comment.cid);
+            } catch (error) {
+                if (error.code !== 'not_found') throw error;
+                url = `/typecho/delete/${comment.cid}/`;
+                console.warn(`在处理评论ID为 ${comment.coid} 的评论时出现问题。\n无法获取并生成内容ID为 ${comment.cid} 的链接。\n已用 ${url} 代替。`);
+            }
             let created = new Date(comment.created * 1000).getTime();
             let twikoo = clean({
                 /* 标识符 */
