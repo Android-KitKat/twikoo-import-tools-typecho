@@ -23,8 +23,6 @@ const config = yaml.safeLoad(fs.readFileSync(process.argv[2] ? process.argv[2] :
 // 创建MySQL数据库连接
 const connection = mysql.createConnection(config.mysql);
 
-var comments = {};
-
 /**
  * 格式化文本
  * @param {object} args 关键字
@@ -36,6 +34,16 @@ String.prototype.format = function (args) {
         result = result.replace(new RegExp(`{${arg}}`, 'g'), args[arg]);
     }
     return result;
+}
+
+/**
+ * 计算哈希值
+ * @param {string} value 值
+ * @returns {string} 哈希值
+ */
+function hash(value) {
+    let prefix = config.salt ? `${config.salt}-` : '';
+    return md5(`${prefix}${value}`);
 }
 
 /**
@@ -172,18 +180,19 @@ async function getURL(cid) {
 }
 
 /**
- * 获取上层评论的标识符
- * @param {int} coid 评论ID
+ * 获取上层评论的ID
+ * @param {Map} comments 评论集合
+ * @param {int} coid 查询评论ID
  * @param {boolean} root 是否追溯到最顶层评论
- * @returns {string} 评论标识符
+ * @returns {int} 评论ID
  */
-function getParentID(coid, root) {
+function getParentID(comments, coid, root) {
     if (coid === 0) return null;
-    let comment = comments[coid];
+    let comment = comments.get(coid);
     while (root && comment && comment.parent != 0) {
-        comment = comments[comment.parent];
+        comment = comments.get(comment.parent);
     }
-    return comment.twikoo._id;
+    return comment.coid;
 }
 
 /**
@@ -207,14 +216,18 @@ function clean(data) {
  */
 async function convert() {
     let output = '';
-    let commentsData = await getComments();
-    for (let comment of commentsData) {
+    let data = await getComments();
+    let comments = new Map();
+    for (let row of data) {
+        comments.set(row.coid, row);
+    }
+    for (let comment of comments.values()) {
         try {
             let url = await getURL(comment.cid);
             let created = new Date(comment.created * 1000).getTime();
             let twikoo = clean({
                 /* 标识符 */
-                _id: md5(config.salt ? `${config.salt}-${comment.coid}` : comment.coid),
+                _id: hash(comment.coid),
 
                 /* 评论人数据 */
                 nick: comment.author,
@@ -232,15 +245,13 @@ async function convert() {
                 isSpam: comment.status === 'spam' || null,
 
                 /* 回复数据 */
-                pid: getParentID(comment.parent),
-                rid: getParentID(comment.parent, true),
+                pid: hash(getParentID(comments, comment.parent)),
+                rid: hash(getParentID(comments, comment.parent, true)),
 
                 /* 时间 */
                 created: created,
                 updated: created
             });
-            comments[comment.coid] = comment;
-            comments[comment.coid].twikoo = twikoo;
             output += `${JSON.stringify(twikoo)}\n`;
             console.info(`已处理评论ID为 ${comment.coid} 的评论。\n${comment.author}:\n${comment.text}\n`);
         } catch (error) {
@@ -248,7 +259,7 @@ async function convert() {
             throw error;
         }
     }
-    console.info(`共处理 ${Object.keys(comments).length} 条数据。`);
+    console.info(`共处理 ${comments.size} 条数据。`);
     return output;
 }
 
