@@ -28,6 +28,10 @@ postPermalink: /{year}/{month}/{day}/{slug}/
 # 可用参数: {cid} 页面 ID, {slug} 页面缩略名
 pagePermalink: /{slug}/
 
+# 冲突处理
+conflictHandle:
+  splitDiffPage: false # 分割父级在不同页面的评论
+
 # 忽略的内容
 # 值是在Typecho中对应的CID
 #ignoreCID: [1, 2, 3]

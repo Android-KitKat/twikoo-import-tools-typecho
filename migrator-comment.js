@@ -184,20 +184,19 @@ async function getURL(cid) {
 /**
  * 获取上层评论的ID
  * @param {Map} comments 评论集合
- * @param {int} coid 查询评论ID
+ * @param {object} comment 查询评论
  * @param {boolean} root 是否追溯到最顶层评论
  * @returns {int} 评论ID
  */
-function getParentID(comments, coid, root) {
-    if (!coid || coid === 0) return null;
-    let comment = comments.get(coid);
-    if (!comment) return null;
-    while (root && comment.parent != 0) {
-        let parent = comments.get(comment.parent);
-        if (!parent) break;
-        comment = parent;
-    }
-    return comment.coid;
+function getParentID(comments, comment, root) {
+    let split = config.conflictHandle && config.conflictHandle.splitDiffPage;
+    let result = comment;
+    do {
+        let data = comments.get(result.parent);
+        if (!data || (split && data.cid !== comment.cid)) break;
+        result = data;
+    } while (root && result.parent != 0);
+    return result !== comment ? result.coid : null;
 }
 
 /**
@@ -257,8 +256,8 @@ async function convert() {
                 isSpam: comment.status === 'spam' || null,
 
                 /* 回复数据 */
-                pid: hash(getParentID(comments, comment.parent)),
-                rid: hash(getParentID(comments, comment.parent, true)),
+                pid: hash(getParentID(comments, comment)),
+                rid: hash(getParentID(comments, comment, true)),
 
                 /* 时间 */
                 created: created,
