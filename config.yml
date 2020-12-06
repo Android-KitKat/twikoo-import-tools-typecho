@@ -1,9 +1,15 @@
 # 数据库配置
-mysql:
-  host: localhost
-  user: root
-  password: password
-  database: typecho
+# https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor
+database:
+  dialect: mysql # 类型 mysql/sqlite/postgres
+  # 通用配置
+  username: root # 用户名
+  password: password # 密码
+  # 来自网络
+  host: localhost # 地址
+  database: typecho # 数据库名
+  # 来自文件(仅SQLite)
+  #storage: path/to/database.sqlite # 文件路径
 
 # 数据库中的表前缀
 prefix: typecho_

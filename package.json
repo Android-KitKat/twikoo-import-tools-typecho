@@ -7,7 +7,11 @@
     "blueimp-md5": "^2.18.0",
     "js-yaml": "^3.14.0",
     "marked": "^1.2.4",
-    "mysql": "^2.18.1"
+    "mysql2": "^2.2.5",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {},
   "scripts": {

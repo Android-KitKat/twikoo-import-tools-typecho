@@ -2,7 +2,7 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 const md5 = require('blueimp-md5');
-const mysql = require('mysql');
+const { Sequelize } = require("sequelize");
 const marked = require('marked');
 
 // 设置Markdown解析参数
@@ -19,9 +19,9 @@ marked.setOptions({
 });
 
 // 获取配置
-const config = yaml.safeLoad(fs.readFileSync(process.argv[2] ? process.argv[2] : 'config.yml'));
-// 创建MySQL数据库连接
-const connection = mysql.createConnection(config.mysql);
+var config = yaml.safeLoad(fs.readFileSync(process.argv[2] ? process.argv[2] : 'config.yml'));
+// 连接数据库
+var database = new Sequelize(Object.assign({ logging: false }, config.database));
 
 /**
  * 格式化文本
@@ -76,11 +76,7 @@ function slugReplace(slug) {
  * @returns {Promise<object>} 执行结果
  */
 async function executeSQL(sql) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (error, results, fields) {
-            error ? reject(error) : resolve(results);
-        });
-    });
+    return (await database.query(sql))[0];
 }
 
 /**
@@ -279,11 +275,10 @@ async function convert() {
  * @returns {Promise<void>}
  */
 async function run() {
-    connection.connect();
     try {
         fs.writeFileSync('comment.json', await convert());
     } finally {
-        connection.end();
+        database.close();
     }
 }
 
