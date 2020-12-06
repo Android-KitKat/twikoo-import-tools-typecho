@@ -20,11 +20,11 @@ salt: typecho
 
 # 博主邮箱
 # 用于确认博主身份
-email: email@domain.com
+email: email@example.com
 
 # 站点地址
 # 用于生成来源地址
-site: https://domain.com
+site: https://example.com
 
 # 生成的文章链接格式
 # 可用参数: {cid} 日志 ID, {slug} 日志缩略名, {category} 分类, {directory} 多级分类, {year} 年, {month} 月, {day} 日
