@@ -21,7 +21,7 @@ marked.setOptions({
 // 获取配置
 var config = yaml.safeLoad(fs.readFileSync(process.argv[2] ? process.argv[2] : 'config.yml'));
 // 连接数据库
-var database = new Sequelize(Object.assign({ logging: false }, config.database));
+var database = new Sequelize(Object.assign({ logging: false }, config.source));
 
 /**
  * 格式化文本

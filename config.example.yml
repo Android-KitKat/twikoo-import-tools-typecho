@@ -1,6 +1,6 @@
 # 数据库配置
 # https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor
-database:
+source:
   dialect: mysql # 类型 mysql/sqlite/postgres
   # 通用配置
   username: root # 用户名
